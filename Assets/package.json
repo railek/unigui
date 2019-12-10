@@ -1,0 +1,22 @@
+{
+  "name": "com.railek.unigui",
+  "version": "0.1.0",
+  "displayName": "Unigui",
+  "description": "UI animation system for navigation & animation of UGUI.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/railek/unigui"
+  },
+  "author": "Railek <jean@railek.com>",
+  "unity": "2019.2",
+  "license": "MIT",
+  "keywords": [
+    "ui",
+    "buttons",
+    "tween"
+  ],
+  "bugs": {
+    "url": "https://github.com/railek/unigui/issues"
+  },
+  "homepage": "https://github.com/railek/unigui/#README"
+}
