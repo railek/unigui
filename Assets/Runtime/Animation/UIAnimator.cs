@@ -20,10 +20,10 @@ namespace Railek.Unigui.Animation
         private const float DefaultDurationOnComplete = 0.05f;
         public const int DefaultVibrato = 10;
         public const float DefaultElasticity = 1;
-        private static readonly Vector3 DefaultStartPosition = Vector3.zero;
-        private static readonly Vector3 DefaultStartRotation = Vector3.zero;
-        private static readonly Vector3 DefaultStartScale = Vector3.one;
-        private const float DefaultStartAlpha = 1f;
+        public static readonly Vector3 DefaultStartPosition = Vector3.zero;
+        public static readonly Vector3 DefaultStartRotation = Vector3.zero;
+        public static readonly Vector3 DefaultStartScale = Vector3.one;
+        public const float DefaultStartAlpha = 1f;
 
         public static Tween MoveTween(RectTransform target, UIAnimation animation, Vector3 startValue, Vector3 endValue)
         {
