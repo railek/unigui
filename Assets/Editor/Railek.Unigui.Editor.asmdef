@@ -1,0 +1,18 @@
+{
+    "name": "Railek.Unigui.Editor",
+    "references": [
+        "GUID:fc3c2705b31cde3429902595dc2020e2",
+        "GUID:b1135243173b1124a89e24630fd454bb",
+        "GUID:b79c4a096a3c958419eb820620a783cb"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}
