@@ -1,4 +1,5 @@
 using System;
+using Railek.Unibase;
 using Railek.Unigui.Animation;
 
 namespace Railek.Unigui
@@ -7,6 +8,8 @@ namespace Railek.Unigui
     public class UIViewBehavior
     {
         public UIAnimation animation;
+        public VoidEvent onStart;
+        public VoidEvent onFinished;
 
         public UIViewBehavior(AnimationType animationType)
         {

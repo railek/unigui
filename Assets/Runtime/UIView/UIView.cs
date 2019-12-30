@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Railek.Unibase;
 using Railek.Unibase.Extensions;
 using Railek.Unigui.Animation;
 using UnityEditor;
@@ -31,16 +30,12 @@ namespace Railek.Unigui
 
         [SerializeField] private float hideAfter = default(float);
         [SerializeField] private UIViewStartBehavior behaviorAtStart = default(UIViewStartBehavior);
-        [SerializeField] private UIViewBehavior showBehavior = new UIViewBehavior(AnimationType.Show);
-        [SerializeField] private UIViewBehavior hideBehavior = new UIViewBehavior(AnimationType.Hide);
-        [SerializeField] private UIViewBehavior loopBehavior = new UIViewBehavior(AnimationType.Loop);
+        [SerializeField] public UIViewBehavior showBehavior = new UIViewBehavior(AnimationType.Show);
+        [SerializeField] public UIViewBehavior hideBehavior = new UIViewBehavior(AnimationType.Hide);
+        [SerializeField] public UIViewBehavior loopBehavior = new UIViewBehavior(AnimationType.Loop);
         [SerializeField] private bool autoStartLoop = true;
         [SerializeField] private bool useCustomPosition = default(bool);
         [SerializeField] private Vector3 customPosition = default(Vector3);
-        [SerializeField] private VoidEvent onShowStart = default(VoidEvent);
-        [SerializeField] private VoidEvent onShowFinished = default(VoidEvent);
-        [SerializeField] private VoidEvent onHideStart = default(VoidEvent);
-        [SerializeField] private VoidEvent onHideFinished= default(VoidEvent);
 
         public override void Awake()
         {
@@ -244,7 +239,7 @@ namespace Railek.Unigui
 
                 if (!invokedOnStart && elapsedTime > startDelay)
                 {
-                    onShowStart.Raise();
+                    showBehavior.onStart.Raise();
                     invokedOnStart = true;
                 }
 
@@ -252,7 +247,7 @@ namespace Railek.Unigui
                 yield return null;
             }
 
-            onShowFinished.Raise();
+            showBehavior.onFinished.Raise();
 
             Visibility = VisibilityState.Visible;
             if (!VisibleViews.Contains(this))
@@ -344,7 +339,7 @@ namespace Railek.Unigui
 
                 if (!invokedOnStart && elapsedTime > startDelay)
                 {
-                    onHideStart.Raise();
+                    hideBehavior.onStart.Raise();
                     invokedOnStart = true;
                 }
 
@@ -356,7 +351,7 @@ namespace Railek.Unigui
 
             if (_initialized)
             {
-                onHideFinished.Raise();
+                hideBehavior.onFinished.Raise();
             }
 
             Visibility = VisibilityState.NotVisible;
