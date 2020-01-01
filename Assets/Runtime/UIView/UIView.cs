@@ -256,7 +256,11 @@ namespace Railek.Unigui
 
                 if (!invokedOnStart && elapsedTime > startDelay)
                 {
-                    showBehavior.onStart.Raise();
+                    if (showBehavior.onStart != null)
+                    {
+                        showBehavior.onStart.Raise();
+                    }
+
                     invokedOnStart = true;
                 }
 
@@ -264,7 +268,10 @@ namespace Railek.Unigui
                 yield return null;
             }
 
-            showBehavior.onFinished.Raise();
+            if (showBehavior.onFinished != null)
+            {
+                showBehavior.onFinished.Raise();
+            }
 
             Visibility = VisibilityState.Visible;
             if (!VisibleViews.Contains(this))

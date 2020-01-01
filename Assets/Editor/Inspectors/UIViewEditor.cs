@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Railek.Unibase.Editor;
+﻿using Railek.Unibase.Editor;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEngine;
@@ -18,10 +16,6 @@ namespace Railek.Unigui.Editor
         private SerializedProperty _showBehavior;
         private SerializedProperty _useCustomPosition;
         private SerializedProperty _customPosition;
-        private SerializedProperty _onShowStart;
-        private SerializedProperty _onShowFinished;
-        private SerializedProperty _onHideStart;
-        private SerializedProperty _onHideFinished;
 
         private AnimBool _showExpanded;
         private AnimBool _hideExpanded;
@@ -31,65 +25,23 @@ namespace Railek.Unigui.Editor
 
         private static bool Draw(string text, AnimBool expanded)
         {
-            return Draw(new GUIContent(text), expanded);
-        }
+            if (!Draw(new GUIContent(text)))
+            {
+                return false;
+            }
 
-        private static bool Draw(GUIContent content, AnimBool expanded)
-        {
-            if (!Draw(content)) return false;
             expanded.target = !expanded.target;
-            Event.current.Use();
+
             return true;
         }
 
-        private static bool Draw(GUIContent content, bool expandWidth = false)
+        private static bool Draw(GUIContent content)
         {
-            var options = new List<GUILayoutOption>();
-            if (expandWidth) options.Add(GUILayout.ExpandWidth(false));
-
             bool result;
 
-            result = GUILayout.Button(content, options.ToArray());
-
-            if (result) Event.current.Use();
+            result = GUILayout.Button(content, GUILayout.ExpandWidth(true));
 
             return result;
-        }
-
-        private static bool Begin(AnimBool expanded)
-        {
-            if (expanded.faded < 0.05f) return false;
-
-            EditorGUILayout.BeginFadeGroup(expanded.faded);
-
-            return true;
-        }
-
-        private static void End(AnimBool expanded)
-        {
-            if (expanded.faded < 0.05f) return;
-
-            EditorGUILayout.EndFadeGroup();
-        }
-
-        private static Vector3 AdjustToRoundValues(Vector3 v3, int maximumAllowedDecimals = 3)
-        {
-            return new Vector3(RoundToIntIfNeeded(v3.x, maximumAllowedDecimals),
-                RoundToIntIfNeeded(v3.y, maximumAllowedDecimals),
-                RoundToIntIfNeeded(v3.z, maximumAllowedDecimals));
-        }
-
-        private static void AdjustPositionRotationAndScaleToRoundValues(RectTransform rectTransform)
-        {
-            rectTransform.anchoredPosition3D = AdjustToRoundValues(rectTransform.anchoredPosition3D);
-            rectTransform.localEulerAngles = AdjustToRoundValues(rectTransform.localEulerAngles);
-            rectTransform.localScale = AdjustToRoundValues(rectTransform.localScale);
-        }
-
-        private static float RoundToIntIfNeeded(float value, int maximumAllowedDecimals = 3)
-        {
-            int numberOfDecimals = BitConverter.GetBytes(decimal.GetBits((decimal) value)[3])[2];
-            return numberOfDecimals >= maximumAllowedDecimals ? Mathf.Round(value) : value;
         }
 
         private UIView Target
@@ -113,10 +65,6 @@ namespace Railek.Unigui.Editor
             _loopBehavior = GetProperty("loopBehavior");
             _useCustomPosition = GetProperty("useCustomPosition");
             _customPosition = GetProperty("customPosition");
-            _onShowStart = GetProperty("onShowStart");
-            _onShowFinished = GetProperty("onShowFinished");
-            _onHideStart = GetProperty("onHideStart");
-            _onHideFinished = GetProperty("onHideFinished");
         }
 
         protected override void InitAnimBool()
@@ -135,7 +83,7 @@ namespace Railek.Unigui.Editor
         protected override void OnEnable()
         {
             base.OnEnable();
-            AdjustPositionRotationAndScaleToRoundValues(Target.RectTransform);
+            Utilities.AdjustPositionRotationAndScaleToRoundValues(Target.RectTransform);
         }
 
         protected override void OnDisable()
@@ -229,18 +177,32 @@ namespace Railek.Unigui.Editor
             }
             GUILayout.EndHorizontal();
 
-            if (Begin(behaviorExpanded))
+            if (behaviorExpanded.value)
             {
+                EditorGUILayout.BeginFadeGroup(behaviorExpanded.faded);
+
                 DrawBehaviorAnimation(animationProperty);
 
                 GUILayout.BeginVertical(EditorStyles.helpBox);
                 {
-                    EditorGUILayout.PropertyField(startProperty);
-                    EditorGUILayout.PropertyField(finishedProperty);
+                    GUILayout.BeginHorizontal();
+                    {
+                        GUILayout.Label("On Start", GUILayout.ExpandWidth(false), GUILayout.Width(96));
+                        EditorGUILayout.PropertyField(startProperty, GUIContent.none);
+                    }
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    {
+                        GUILayout.Label("On Finished", GUILayout.ExpandWidth(false), GUILayout.Width(96));
+                        EditorGUILayout.PropertyField(finishedProperty, GUIContent.none);
+                    }
+                    GUILayout.EndHorizontal();
                 }
                 GUILayout.EndVertical();
+
+                EditorGUILayout.EndFadeGroup();
             }
-            End(behaviorExpanded);
         }
 
         private void DrawBehaviorAnimation(SerializedProperty animationProperty)
@@ -284,29 +246,34 @@ namespace Railek.Unigui.Editor
             }
             GUILayout.EndHorizontal();
 
-            if (Begin(moveExpanded))
+            if (moveExpanded.value)
             {
+                EditorGUILayout.BeginFadeGroup(moveExpanded.faded);
                 EditorGUILayout.PropertyField(move, GUIContent.none, false);
+                EditorGUILayout.EndFadeGroup();
             }
-            End(moveExpanded);
 
-            if (Begin(rotateExpanded))
+            if (rotateExpanded.value)
             {
+                EditorGUILayout.BeginFadeGroup(rotateExpanded.faded);
                 EditorGUILayout.PropertyField(rotate, GUIContent.none, false);
+                EditorGUILayout.EndFadeGroup();
             }
-            End(rotateExpanded);
 
-            if (Begin(scaleExpanded))
+            if (scaleExpanded.value)
             {
+                EditorGUILayout.BeginFadeGroup(scaleExpanded.faded);
                 EditorGUILayout.PropertyField(scale, GUIContent.none, false);
+                EditorGUILayout.EndFadeGroup();
             }
-            End(scaleExpanded);
 
-            if (Begin(fadeExpanded))
+            if (fadeExpanded.value)
             {
+                EditorGUILayout.BeginFadeGroup(fadeExpanded.faded);
                 EditorGUILayout.PropertyField(fade, GUIContent.none, false);
+                EditorGUILayout.EndFadeGroup();
             }
-            End(fadeExpanded);
+
         }
     }
 }

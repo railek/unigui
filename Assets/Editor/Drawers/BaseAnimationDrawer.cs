@@ -18,23 +18,35 @@ namespace Railek.Unigui.Editor.Drawers
                 switch (_animationType)
                 {
                     case AnimationType.Show:
+                    {
                         DrawShow(property);
                         break;
+                    }
                     case AnimationType.Hide:
+                    {
                         DrawHide(property);
                         break;
+                    }
                     case AnimationType.Loop:
+                    {
                         DrawLoop(property);
                         break;
+                    }
                     case AnimationType.Punch:
+                    {
                         DrawPunch(property);
                         break;
+                    }
                     case AnimationType.State:
+                    {
                         DrawState(property);
                         break;
+                    }
                     case AnimationType.Undefined:
+                    {
                         DrawUndefined(property);
                         break;
+                    }
                     default: throw new ArgumentOutOfRangeException();
                 }
             }
@@ -171,8 +183,8 @@ namespace Railek.Unigui.Editor.Drawers
                 {
                     GUILayout.BeginHorizontal();
                     {
-                        GUILayout.Label("Direction");
-                        EditorGUILayout.PropertyField(direction, GUIContent.none, GUILayout.ExpandWidth(true));
+                        GUILayout.Label("Direction", GUILayout.ExpandWidth(false));
+                        EditorGUILayout.PropertyField(direction, GUIContent.none);
                     }
                     GUILayout.EndHorizontal();
                 }
@@ -186,8 +198,8 @@ namespace Railek.Unigui.Editor.Drawers
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label("By");
-                EditorGUILayout.PropertyField(by, GUIContent.none,GUILayout.ExpandWidth(true));
+                GUILayout.Label("By", GUILayout.ExpandWidth(false));
+                EditorGUILayout.PropertyField(by, GUIContent.none);
             }
             GUILayout.EndHorizontal();
         }
@@ -198,8 +210,8 @@ namespace Railek.Unigui.Editor.Drawers
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label("From");
-                EditorGUILayout.PropertyField(from, GUIContent.none,GUILayout.ExpandWidth(true));
+                GUILayout.Label("From", GUILayout.ExpandWidth(false));
+                EditorGUILayout.PropertyField(from, GUIContent.none);
             }
             GUILayout.EndHorizontal();
         }
@@ -210,8 +222,8 @@ namespace Railek.Unigui.Editor.Drawers
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label("To");
-                EditorGUILayout.PropertyField(to, GUIContent.none,GUILayout.ExpandWidth(true));
+                GUILayout.Label("To", GUILayout.ExpandWidth(false));
+                EditorGUILayout.PropertyField(to, GUIContent.none);
             }
             GUILayout.EndHorizontal();
         }
@@ -297,7 +309,7 @@ namespace Railek.Unigui.Editor.Drawers
                     EditorGUILayout.PropertyField(rotateMode, GUIContent.none,GUILayout.ExpandWidth(true));
                 }
             }
-            GUILayout.EndHorizontal(); ;
+            GUILayout.EndHorizontal();
         }
     }
 }

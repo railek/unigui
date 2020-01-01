@@ -69,7 +69,7 @@ namespace Railek.Unigui.Editor
             base.OnEnable();
             _target = (UIButton) target;
 
-            AdjustPositionRotationAndScaleToRoundValues(Target.RectTransform);
+            Utilities.AdjustPositionRotationAndScaleToRoundValues(Target.RectTransform);
         }
 
         protected override void OnDisable()
@@ -168,26 +168,6 @@ namespace Railek.Unigui.Editor
             result = GUILayout.Button(content, GUILayout.ExpandWidth(true));
 
             return result;
-        }
-
-        private static Vector3 AdjustToRoundValues(Vector3 v3, int maximumAllowedDecimals = 3)
-        {
-            return new Vector3(RoundToIntIfNeeded(v3.x, maximumAllowedDecimals),
-                RoundToIntIfNeeded(v3.y, maximumAllowedDecimals),
-                RoundToIntIfNeeded(v3.z, maximumAllowedDecimals));
-        }
-
-        private static void AdjustPositionRotationAndScaleToRoundValues(RectTransform rectTransform)
-        {
-            rectTransform.anchoredPosition3D = AdjustToRoundValues(rectTransform.anchoredPosition3D);
-            rectTransform.localEulerAngles = AdjustToRoundValues(rectTransform.localEulerAngles);
-            rectTransform.localScale = AdjustToRoundValues(rectTransform.localScale);
-        }
-
-        private static float RoundToIntIfNeeded(float value, int maximumAllowedDecimals = 3)
-        {
-            int numberOfDecimals = BitConverter.GetBytes(decimal.GetBits((decimal) value)[3])[2];
-            return numberOfDecimals >= maximumAllowedDecimals ? Mathf.Round(value) : value;
         }
 
         private void DrawBehavior(string behaviorName, UIButtonBehavior behavior, SerializedProperty behaviorProperty,
