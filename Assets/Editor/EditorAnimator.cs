@@ -92,6 +92,74 @@ namespace Railek.Unigui.Editor
                 });
         }
 
+        public static void PreviewButtonAnimation(UIAnimation animation, RectTransform rectTransform, CanvasGroup canvasGroup)
+        {
+            if (PreviewIsPlaying) return;
+            _delayedCall?.Cancel();
+            StopButtonPreview(rectTransform, canvasGroup);
+
+            var target = rectTransform;
+            _startPosition = target.anchoredPosition3D;
+            _startRotation = target.localRotation.eulerAngles;
+            _startScale = target.localScale;
+            _startAlpha = canvasGroup.alpha;
+
+            StopAllAnimations(target);
+
+            var moveFrom = UIAnimator.GetAnimationMoveFrom(rectTransform, animation, _startPosition);
+            var moveTo = UIAnimator.GetAnimationMoveTo(rectTransform, animation, _startPosition);
+            if (!animation.move.enabled) target.anchoredPosition3D = _startPosition;
+            else PreviewMove(rectTransform, moveFrom, moveTo, animation, _startPosition);
+
+            var rotateFrom = UIAnimator.GetAnimationRotateFrom(animation, _startRotation);
+            var rotateTo = UIAnimator.GetAnimationRotateTo(animation, _startRotation);
+            if (!animation.rotate.enabled) target.localRotation = Quaternion.Euler(_startRotation);
+            else PreviewRotate(rectTransform, rotateFrom, rotateTo, animation, _startRotation);
+
+            var scaleFrom = UIAnimator.GetAnimationScaleFrom(animation, _startScale);
+            var scaleTo = UIAnimator.GetAnimationScaleTo(animation, _startScale);
+            if (!animation.scale.enabled) target.localScale = _startScale;
+            else PreviewScale(rectTransform, scaleFrom, scaleTo, animation, _startScale);
+
+            var fadeFrom = UIAnimator.GetAnimationFadeFrom(animation, _startAlpha);
+            var fadeTo = UIAnimator.GetAnimationFadeTo(animation, _startAlpha);
+            if (!animation.fade.enabled) canvasGroup.alpha = _startAlpha;
+            else PreviewFade(rectTransform, fadeFrom, fadeTo, animation, _startAlpha);
+
+            DOTweenEditorPreview.Start();
+            PreviewIsPlaying = true;
+
+            _delayedCall = new DelayedCall(
+                animation.animationType == AnimationType.Loop
+                    ? 5f
+                    : animation.TotalDuration +
+                      (animation.animationType == AnimationType.Hide || animation.animationType == AnimationType.State
+                          ? 0.5f
+                          : 0f), () =>
+                          {
+                              StopButtonPreview(rectTransform, canvasGroup);
+                              _delayedCall = null;
+                          });
+        }
+
+        private static void ResetButtonToStartValues(RectTransform rectTransform, CanvasGroup canvasGroup)
+        {
+            rectTransform.anchoredPosition3D = _startPosition;
+            rectTransform.localRotation = Quaternion.Euler(_startRotation);
+            rectTransform.localScale = _startScale;
+            canvasGroup.alpha = _startAlpha;
+        }
+
+        public static void StopButtonPreview(RectTransform rectTransform, CanvasGroup canvasGroup)
+        {
+            DOTweenEditorPreview.Stop(true);
+            if (PreviewIsPlaying)
+            {
+                ResetButtonToStartValues(rectTransform, canvasGroup);
+            }
+            PreviewIsPlaying = false;
+        }
+
         private static void PreviewMove(RectTransform target, Vector3 from, Vector3 to, UIAnimation animation,
             Vector3 startPosition)
         {

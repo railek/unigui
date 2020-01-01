@@ -27,6 +27,7 @@ namespace Railek.Unigui
         private Coroutine _showCoroutine;
         private VisibilityState _visibility;
         private float _visibilityProgress;
+        private UIButton[] _childUIButtons;
 
         [SerializeField] private float hideAfter = default(float);
         [SerializeField] private UIViewStartBehavior behaviorAtStart = default(UIViewStartBehavior);
@@ -58,6 +59,7 @@ namespace Railek.Unigui
         public override void OnEnable()
         {
             _childUIViews = GetComponentsInChildren<UIView>();
+            _childUIButtons = GetComponentsInChildren<UIButton>();
         }
 
         public override void OnDisable()
@@ -87,6 +89,9 @@ namespace Railek.Unigui
 
         private void Initialize()
         {
+            _childUIButtons = GetComponentsInChildren<UIButton>();
+            UpdateChildUIButtonsStartValues();
+
             _childUIViews = GetComponentsInChildren<UIView>();
 
             switch (behaviorAtStart)
@@ -123,6 +128,18 @@ namespace Railek.Unigui
                 {
                     throw new ArgumentOutOfRangeException();
                 }
+            }
+        }
+        private void UpdateChildUIButtonsStartValues()
+        {
+            if (_childUIButtons == null)
+            {
+                return;
+            }
+
+            foreach (var button in _childUIButtons)
+            {
+                button.UpdateStartValues();
             }
         }
 
@@ -239,7 +256,11 @@ namespace Railek.Unigui
 
                 if (!invokedOnStart && elapsedTime > startDelay)
                 {
-                    showBehavior.onStart.Raise();
+                    if (showBehavior.onStart != null)
+                    {
+                        showBehavior.onStart.Raise();
+                    }
+
                     invokedOnStart = true;
                 }
 
@@ -247,7 +268,10 @@ namespace Railek.Unigui
                 yield return null;
             }
 
-            showBehavior.onFinished.Raise();
+            if (showBehavior.onFinished != null)
+            {
+                showBehavior.onFinished.Raise();
+            }
 
             Visibility = VisibilityState.Visible;
             if (!VisibleViews.Contains(this))
